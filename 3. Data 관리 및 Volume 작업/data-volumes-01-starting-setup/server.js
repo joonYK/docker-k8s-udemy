@@ -40,12 +40,13 @@ app.post('/create', async (req, res) => {
   //temp폴더에 파일을 미리 저장
   await fs.writeFile(tempFilePath, content);
 
-  //같은 제목의 파일이 feedback폴더에 없으면 temp폴더에 있던 파일을 feedback폴더로 저장
+  //같은 제목의 파일이 feedback폴더에 없으면 temp폴더에 있던 파일을 feedback폴더에 저장
   exists(finalFilePath, async (exists) => {
     if (exists) {
       res.redirect('/exists');
     } else {
-      await fs.rename(tempFilePath, finalFilePath);
+      await fs.copyFile(tempFilePath, finalFilePath);
+      await fs.unlink(tempFilePath);
       res.redirect('/');
     }
   });
